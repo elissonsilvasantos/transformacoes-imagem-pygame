@@ -8,7 +8,7 @@ pygame.init()
 # configuração de tela
 largura_tela, altura_tela = 500, 500 # dimensões padrão
 tela = pygame.display.set_mode((largura_tela, altura_tela))
-pygame.display.set_caption('mover imagem')
+pygame.display.set_caption('Programa Edição de Imagem')
 
 # configurar imagem
 
@@ -24,10 +24,20 @@ tela.fill(cor_fundo) # pôr cor de fundo na tela
 tela.blit(imagem.obj, (imagem.pos_x, imagem.pos_y)) # pôr imagem na tela
 
 
-# precisa encontrar uma forma de rotacionar no eixo
-#  X precisa encontrar uma forma de mover preservando a rotação/angulo - FEITO
+# erro translação x rotação (menor): precisa encontrar uma forma de rotacionar no eixo
 
+# erro rotação x escala (menor): movendo de forma incorreta quando troca entre as transformações
 
+# [resolvido] erro rotação x escala (MAIOR): quando faz rotação e depois escala, a escala desconsidera o grau
+
+# erro rotação x escala (MAIOR): quando faz rotação, escala e rotação denovo, rotação deixa tamanho errado
+
+# erro rotação x escala (MAIOR): quando faz rotação 90 e depois escala, o altura é trocado por largura
+
+print('COMANDOS')
+print('mover imagem: [seta-esquerda, seta-direita, seta-cima, seta-baixo]')
+print('rotacionar imagem: [a, d]')
+print('aumentar/diminuir: [w, s]')
 
 while True:
     for evento in pygame.event.get(): # lista de eventos
@@ -41,24 +51,40 @@ while True:
                 imagem.pos_y -= 10
                 tela.fill(cor_fundo)
                 nova_imagem = pygame.transform.rotate(imagem.obj, imagem.angulo) # manter rotação
+                # manter escala
+                imagem.largura = nova_imagem.get_width()
+                imagem.altura = nova_imagem.get_height()
+                nova_imagem = pygame.transform.scale(nova_imagem, (imagem.largura, imagem.altura)) 
                 tela.blit(nova_imagem, (imagem.pos_x, imagem.pos_y))
             
             if evento.key == pygame.K_DOWN: # mover para baixo
                 imagem.pos_y += 10
                 tela.fill(cor_fundo)
                 nova_imagem = pygame.transform.rotate(imagem.obj, imagem.angulo) # manter rotação
+                # manter escala
+                imagem.largura = nova_imagem.get_width()
+                imagem.altura = nova_imagem.get_height()
+                nova_imagem = pygame.transform.scale(nova_imagem, (imagem.wlargura, imagem.altura)) 
                 tela.blit(nova_imagem, (imagem.pos_x, imagem.pos_y))
 
             if evento.key == pygame.K_LEFT: # mover para a esquerda
                 imagem.pos_x -= 10
                 tela.fill(cor_fundo)
                 nova_imagem = pygame.transform.rotate(imagem.obj, imagem.angulo) # manter rotação
+                # manter escala
+                imagem.largura = nova_imagem.get_width()
+                imagem.altura = nova_imagem.get_height()
+                nova_imagem = pygame.transform.scale(nova_imagem, (imagem.largura, imagem.altura)) 
                 tela.blit(nova_imagem, (imagem.pos_x, imagem.pos_y))
 
             if evento.key == pygame.K_RIGHT: # mover para a direita
                 imagem.pos_x += 10
                 tela.fill(cor_fundo)
                 nova_imagem = pygame.transform.rotate(imagem.obj, imagem.angulo) # manter rotação
+                # manter escala
+                imagem.largura = nova_imagem.get_width()
+                imagem.altura = nova_imagem.get_height()
+                nova_imagem = pygame.transform.scale(nova_imagem, (imagem.largura, imagem.altura)) 
                 tela.blit(nova_imagem, (imagem.pos_x, imagem.pos_y))
 
 
@@ -68,14 +94,58 @@ while True:
                 imagem.angulo -= 10
                 tela.fill(cor_fundo)
                 nova_imagem = pygame.transform.rotate(imagem.obj, imagem.angulo)
+                imagem.largura = nova_imagem.get_width()
+                imagem.altura = nova_imagem.get_height()
+                nova_imagem = pygame.transform.scale(nova_imagem, (imagem.largura, imagem.altura))
                 tela.blit(nova_imagem, (imagem.pos_x, imagem.pos_y))
             
             if evento.key == pygame.K_d: # rotacionar sentido anti-horário
                 imagem.angulo += 10
                 tela.fill(cor_fundo)
                 nova_imagem = pygame.transform.rotate(imagem.obj, imagem.angulo)
+                imagem.largura = nova_imagem.get_width()
+                imagem.altura = nova_imagem.get_height()
+                nova_imagem = pygame.transform.scale(nova_imagem, (imagem.largura, imagem.altura))
                 tela.blit(nova_imagem, (imagem.pos_x, imagem.pos_y))
 
+
+            # eventos de escala
+
+            if evento.key == pygame.K_w: # aumentar
+                imagem.largura += 50
+                imagem.altura += 50
+                # para permanecer no centro
+                imagem.pos_x -= 25
+                imagem.pos_y -= 25
+                tela.fill((50, 50, 50)) # apagar tudo
+
+                
+
+                # manter rotação
+                nova_imagem = pygame.transform.scale(imagem.obj, (imagem.largura, imagem.altura))
+                nova_imagem = pygame.transform.rotate(nova_imagem, imagem.angulo)
+                tela.blit(nova_imagem, (imagem.pos_x, imagem.pos_y))
+
+                '''
+                print('-'*30)
+                print('largura teorica: ', imagem.largura)
+                print('largura real:', nova_imagem.get_width())
+                print('altura teorica:', imagem.altura)
+                print('altura real:', nova_imagem.get_height())
+                '''
+            
+            if evento.key == pygame.K_s:
+                imagem.largura -= 50
+                imagem.altura -= 50
+                # para permanecer no centro
+                imagem.pos_x += 25
+                imagem.pos_y += 25
+                tela.fill((50, 50, 50)) # apagar tudo
+
+                # manter rotação
+                nova_imagem = pygame.transform.scale(imagem.obj, (imagem.largura, imagem.altura))
+                nova_imagem = pygame.transform.rotate(nova_imagem, imagem.angulo)
+                tela.blit(nova_imagem, (imagem.pos_x, imagem.pos_y))
 
 
     pygame.display.flip() # renderizar
