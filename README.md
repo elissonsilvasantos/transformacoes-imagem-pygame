@@ -14,3 +14,7 @@ ao executar o arquivo app.py. Mas não foi possível fazer a integração. Porta
 mover imagem: [seta-esquerda, seta-direita, seta-cima, seta-baixo] <br>
 rotacionar imagem: [a, d] <br>
 aumentar/diminuir: [w, s]
+
+# Documento de especificação
+
+https://docs.google.com/document/d/1t56f_vm0tjpJ3nRYQRMP6evjJS_eWh_JWbzgkjjOq4I/edit?usp=sharing
